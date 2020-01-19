@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
-import MapView from "react-native-maps";
-import { requestPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
+import { StyleSheet, Image, View, Text } from "react-native";
+import MapView, { Marker, Callout } from "react-native-maps";
+import {
+	requestPermissionsAsync,
+	getCurrentPositionAsync
+} from "expo-location";
 
 export default function Main() {
 	const [currentRegion, setCurrentRegion] = useState(null);
@@ -9,9 +12,9 @@ export default function Main() {
 	useEffect(() => {
 		async function loadInitialPosition() {
 			const { granted } = await requestPermissionsAsync();
-			if(granted){
+			if (granted) {
 				const { coords } = await getCurrentPositionAsync({
-					enableHighAccuracy: true,
+					enableHighAccuracy: true
 				});
 				const { latitude, longitude } = coords;
 
@@ -26,14 +29,34 @@ export default function Main() {
 		loadInitialPosition();
 	}, []);
 
-	if(!currentRegion){
+	if (!currentRegion) {
 		return null;
 	}
-	return <MapView style={styles.map} />;
+	return (
+		<MapView initialRegion={currentRegion} style={styles.map}>
+			<Marker coordinate={{ latitude: -22.560202, longitude: -44.9703053 }}>
+				<Image style={styles.avatar} source={{ uri: 'https://avatars2.githubusercontent.com/u/15326732?s=460&v=4'}} />
+				<Callout>
+					<View style={styles.callout}>
+						<Text style={styles.devname}>Gabriel Modesto</Text>
+						<Text style={styles.devbio}>Full Stack Developer, Systems Analyst, Clara's Father, Thais' Husband and Rugby Player</Text>
+						<Text style={styles.devtechs}>ReactJS, React Native, PHP</Text>
+					</View>
+				</Callout>
+			</Marker>
+		</MapView>
+	);
 }
 
 const styles = StyleSheet.create({
 	map: {
 		flex: 1
-	}
+	},
+	avatar: {
+		width: 54,
+		height: 54,
+		borderRadius: 4,
+		borderWidth: 4,
+		borderColor: '#FFF',
+	},
 });
